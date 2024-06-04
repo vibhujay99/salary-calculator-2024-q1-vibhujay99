@@ -6,6 +6,21 @@ import {
   addDeduction,
   reset,
 } from "../SalarySlice";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import Grid from "@mui/material/Grid";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import { styled } from "@mui/system";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import Button from "@mui/material/Button";
+
+const FormGrid = styled(Grid)(() => ({
+  display: "flex",
+  flexDirection: "column",
+}));
 
 const SalaryForm = () => {
   const dispatch = useDispatch();
@@ -38,21 +53,46 @@ const SalaryForm = () => {
   const resetForm = () => dispatch(reset());
   return (
     <div>
-      <h2>Calculate Your Salary</h2>
-
-      <div>
-        <label>Basic Salary:</label>
-        <input
-          type="number"
-          value={basicSalary}
-          onChange={handleBasicSalaryChange}
-        />
-        <button
-          onClick={() => dispatch(setBasicSalary(parseFloat(basicSalary)))}
+      <Box sx={{ fontWeight: "bold" }}>
+        <Typography variant="h5" gutterBottom>
+          Calculate Your Salary
+        </Typography>
+        <Typography
+          variant="h4"
+          gutterBottom
+          align="right"
+          style={{ fontWeight: 1500 }}
         >
-          Set Basic Salary
-        </button>
-      </div>
+          <Button
+            variant="outlined"
+            startIcon={<RestartAltIcon />}
+            onClick={resetForm}
+          >
+            Reset
+          </Button>
+        </Typography>
+      </Box>
+      <Grid container spacing={3}>
+        <FormGrid item xs={12} md={5}>
+          <FormLabel htmlFor="basicSalary" required>
+            Basic Salary
+          </FormLabel>
+          <OutlinedInput
+            id="basicSalary"
+            name="basicSalary"
+            type="number"
+            placeholder="eg: 250000"
+            value={basicSalary}
+            onChange={handleBasicSalaryChange}
+            required
+          />
+        </FormGrid>
+      </Grid>
+
+      <Button onClick={() => dispatch(setBasicSalary(parseFloat(basicSalary)))}>
+        Set Basic Salary
+      </Button>
+
       <div>
         <h3>Add Earning</h3>
         <input
@@ -98,7 +138,6 @@ const SalaryForm = () => {
         />
         <button onClick={addNewDeduction}>Add Deduction</button>
       </div>
-      <button onClick={resetForm}>Reset</button>
     </div>
   );
 };

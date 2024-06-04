@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
@@ -46,23 +46,43 @@ const salarySlice = createSlice({
   },
 });
 
-const calculateSalary = async (state) => {
-  try {
-    const response = await axios.post("http://localhost:5000/calculate", {
-      basicSalary: state.basicSalary,
-      earnings: state.earnings,
-      deductions: state.deductions,
-    });
-    const { epf, etf, apit, netSalary, costToCompany } = response.data;
-    state.epf = epf;
-    state.etf = etf;
-    state.apit = apit;
-    state.netSalary = netSalary;
-    state.costToCompany = costToCompany;
-  } catch (error) {
-    console.error("Error calculating salary:", error);
+// const calculateSalary = async (state) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:5000/api/salary/calculate",
+//       {
+//         basicSalary: state.basicSalary,
+//         earnings: state.earnings,
+//         deductions: state.deductions,
+//       }
+//     );
+//     const { epf, etf, apit, netSalary, costToCompany } = response.data;
+//     state.epf = epf;
+//     state.etf = etf;
+//     state.apit = apit;
+//     state.netSalary = netSalary;
+//     state.costToCompany = costToCompany;
+//   } catch (error) {
+//     console.error("Error calculating salary:", error);
+//   }
+// };
+
+export const calculateSalary = createAsyncThunk(
+  "salary/calculateSalary",
+  async (salaryData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/salary/calculate",
+        salaryData
+      );
+      console.log("Backend Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error calculating salary:", error);
+      return rejectWithValue(error.response.data);
+    }
   }
-};
+);
 
 export const {
   setBasicSalary,
